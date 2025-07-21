@@ -1,19 +1,48 @@
-/* Catppuccin Mocha Theme */
+/* Dark Theme V2.2 - Sleek & Glowing */
 .stApp {
-    background-color: #1E1E2E;
-    color: #CDD6F4; 
+    background-color: #0d1117;
+    color: #c9d1d9; 
 }
+
 .st-emotion-cache-16txtl3 { /* Sidebar */
-    background-color: #11111B;
+    background-color: #161b22;
 }
-h1, h2, h3 { color: #FAB387; } /* Peach */
-.st-emotion-cache-16txtl3 h1, .st-emotion-cache-16txtl3 h2, .st-emotion-cache-16txtl3 h3 {
-    color: #89B4FA; /* Blue */
+
+h1, h2, h3 {
+    color: #58a6ff; /* Bright Blue */
 }
-.stButton>button { border: 2px solid #89B4FA; border-radius: 10px; color: #89B4FA; background-color: transparent; }
-.stButton>button:hover { border-color: #BAC2DE; color: #BAC2DE; }
-.stButton>button:active { transform: scale(0.98); opacity: 0.9; }
-.stButton>button[kind="primary"] { background-color: #89B4FA; color: #1E1E2E; font-weight: bold; }
-.st-emotion-cache-1r6slb0 { /* Toggle */
-    background-color: #313244;
+
+/* --- Interactive Elements --- */
+.stButton>button {
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    color: #58a6ff;
+    background-color: #21262d;
+    transition: all 0.2s ease;
+}
+.stButton>button:hover {
+    border-color: #8b949e;
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+}
+.stButton>button:active {
+    transform: scale(0.98);
+}
+.stButton>button[kind="primary"] {
+    background-color: #238636; /* GitHub Green */
+    color: white;
+    border-color: #2ea043;
+}
+.stButton>button[kind="primary"]:hover {
+    background-color: #2ea043;
+    box-shadow: 0 0 15px rgba(46, 160, 67, 0.6);
+}
+
+.stTextInput input, .stTextArea textarea {
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    background-color: #0d1117;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border: 1px solid #58a6ff;
+    box-shadow: 0 0 8px rgba(88, 166, 255, 0.5);
 }

@@ -1,19 +1,51 @@
-/* Catppuccin Latte Theme */
+/* Light Theme V2.2 - Vibrant & Animated */
+@keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .stApp {
-    background-color: #EFF1F5;
-    color: #4C4F69;
+    background: linear-gradient(-45deg, #fce3ec, #f0e6ff, #e6f0ff, #e0fbf8);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
+    color: #333;
 }
+
 .st-emotion-cache-16txtl3 { /* Sidebar */
-    background-color: #E6E9EF;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
 }
-h1, h2, h3 { color: #D20F39; } /* Maroon */
-.st-emotion-cache-16txtl3 h1, .st-emotion-cache-16txtl3 h2, .st-emotion-cache-16txtl3 h3 {
-    color: #1E66F5; /* Blue */
+
+h1, h2, h3 {
+    color: #d6336c; /* Vibrant Pink */
 }
-.stButton>button { border: 2px solid #1E66F5; border-radius: 10px; color: #1E66F5; background-color: transparent; }
-.stButton>button:hover { border-color: #4C4F69; color: #4C4F69; }
-.stButton>button:active { transform: scale(0.98); opacity: 0.9; }
-.stButton>button[kind="primary"] { background-color: #1E66F5; color: #EFF1F5; font-weight: bold; }
-.st-emotion-cache-1r6slb0 { /* Toggle */
-    background-color: #CCD0DA;
+
+/* --- Interactive Elements --- */
+.stButton>button {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff8a00, #e52e71);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(229, 46, 113, 0.4);
+}
+.stButton>button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(229, 46, 113, 0.6);
+}
+.stButton>button:active {
+    transform: translateY(0px) scale(0.98);
+}
+
+.stTextInput input, .stTextArea textarea {
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-color: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+.stTextInput input:focus, .stTextArea textarea:focus {
+    border: 2px solid #e52e71;
+    box-shadow: 0 0 15px rgba(229, 46, 113, 0.3);
 }
