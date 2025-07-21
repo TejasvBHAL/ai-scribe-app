@@ -21,9 +21,7 @@ def create_pdf(report_text):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=11)
-    # Encode to 'latin-1' to handle special characters gracefully in FPDF
     cleaned_text = report_text.encode('latin-1', 'replace').decode('latin-1')
     pdf.multi_cell(0, 10, txt=cleaned_text)
 
-    # FPDF output is bytes by default when no file name is given
     return bytes(pdf.output())
