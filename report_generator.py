@@ -67,7 +67,7 @@ def generate_dynamic_report(raw_alert_data: dict, required_sections: list) -> st
 
     try:
         # Initialize the Gemini Pro model
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
         # Send the prompt to the model
         response = model.generate_content(master_prompt)

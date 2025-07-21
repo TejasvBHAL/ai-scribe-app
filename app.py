@@ -1,42 +1,23 @@
-# app.py (with debugging statements)
+# app.py (Clean Version)
 
 import streamlit as st
-st.write("DEBUG: App execution started. Importing libraries...")
-
-# We will import the generator function and handle potential errors
-try:
-    from report_generator import generate_dynamic_report
-    st.write("DEBUG: 'report_generator' imported successfully.")
-except ImportError as e:
-    st.error(f"FATAL ERROR: Could not import 'generate_dynamic_report'. Please check your 'report_generator.py' file. Error: {e}")
-    st.stop() # Stop the app if the import fails
+from report_generator import generate_dynamic_report
 
 # --- Page Configuration ---
-st.write("DEBUG: Setting page configuration...")
-try:
-    st.set_page_config(
-        page_title="AI Scribe",
-        page_icon="✒️",
-        layout="wide",
-        initial_sidebar_state="collapsed",
-    )
-    st.write("DEBUG: Page config set successfully.")
-except Exception as e:
-    st.error(f"FATAL ERROR: Failed to set page config. Error: {e}")
-    st.stop()
-
+st.set_page_config(
+    page_title="AI Scribe",
+    page_icon="✒️",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 # --- Session State Initialization ---
-st.write("DEBUG: Initializing session state...")
 if 'incident_data' not in st.session_state:
     st.session_state.incident_data = {}
-st.write("DEBUG: Session state initialized.")
-
 
 # --- UI Rendering ---
-st.write("DEBUG: Drawing main UI...")
 st.title("✒️ AI Scribe: Dynamic Incident Reporter")
-st.caption(f"A tool to assist with professional reporting.")
+st.caption("A tool to assist with professional reporting.")
 
 
 col1, col2 = st.columns((1, 1))
@@ -90,10 +71,10 @@ with col2:
                     raw_alert_data=st.session_state.incident_data,
                     required_sections=required_sections
                 )
-st.write("DEBUG: Main UI drawn successfully.")
 
 # --- Display Final Report ---
 if 'final_report' in st.session_state:
     st.header("Generated Report")
     st.markdown(st.session_state.final_report)
     st.success("Report generated successfully!", icon="✅")
+    st.balloons()
