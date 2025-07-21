@@ -1,82 +1,91 @@
-# report_generator.py
+# report_generator.py (Backend V2)
 
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 import json
+import streamlit as st
 
-# --- Configuration ---
-# Load environment variables from .env file (for the API key)
+# --- Unified API Key Configuration ---
 load_dotenv()
-
-# Securely configure the Gemini API key
 api_key = os.getenv("GEMINI_API_KEY")
+
 if not api_key:
-    raise ValueError("GEMINI_API_KEY not found. Please set it in your .env file.")
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except (KeyError, FileNotFoundError):
+        st.error("GEMINI_API_KEY not found in Streamlit secrets.")
+        st.stop()
 genai.configure(api_key=api_key)
 
+# Initialize the Gemini Model
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# --- The Core Dynamic Function ---
+def run_ai_stage(prompt):
+    """A helper function to run a single AI stage."""
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        st.error(f"An AI stage failed: {e}")
+        return None
 
 def generate_dynamic_report(raw_alert_data: dict, required_sections: list) -> str:
     """
-    Generates a dynamic cybersecurity incident report using Gemini Pro.
-
-    This function is designed to be highly flexible:
-    - It takes raw alert data as a Python dictionary, allowing for any type of alert.
-    - It takes a list of required sections, allowing the user to define the report structure.
-
-    Args:
-        raw_alert_data (dict): A dictionary containing all the raw data, notes, and IOCs
-                               related to the security incident.
-        required_sections (list): A list of strings, where each string is a required
-                                  section header for the final report.
-
-    Returns:
-        str: The generated report in Markdown format, or an error message.
+    Runs the multi-stage AI chain to generate a high-quality report.
     """
-    # Convert the Python dictionary of alert data into a clean, readable string format for the prompt.
-    # JSON format is excellent for this.
-    formatted_alert_data = json.dumps(raw_alert_data, indent=4)
+    raw_data_str = json.dumps(raw_alert_data, indent=2)
 
-    # Convert the list of required sections into a numbered list for the prompt.
-    formatted_sections = "\n".join(f"{i+1}. {section}" for i, section in enumerate(required_sections))
-
-    # --- The New, Dynamic Master Prompt ---
-    # This prompt is the "brain" of our operation. It instructs Gemini on how to behave
-    # and what to do with the dynamic data we provide.
-    master_prompt = f"""
-    **Role and Goal:**
-    You are a world-class Tier 3 Cybersecurity Analyst and technical writer. Your primary task is to synthesize raw, unstructured incident data into a formal, professional, and clear incident report suitable for both technical teams and management.
-
-    **Instructions:**
-    1.  Carefully analyze the provided "Raw Incident Data" in JSON format. This data contains everything known about the incident.
-    2.  You MUST generate a report that includes the following sections ONLY, and they must appear in this EXACT order:
-        {formatted_sections}
-    3.  For each section, synthesize the relevant information from the raw data. If data for a section is not provided, state "No data available for this section."
-    4.  The tone must be authoritative, objective, and precise. Use clear headings with Markdown (`## Section Title`).
-    5.  Do not add any sections that were not explicitly requested. Do not include any introductory or concluding remarks outside of the requested sections.
-
-    **Raw Incident Data (JSON):**
-    ```json
-    {formatted_alert_data}
-    ```
-
-    **Begin Report Generation:**
+    # --- Stage 1: Triage & IOC Extraction ---
+    st.info("Stage 1: Extracting Indicators of Compromise...")
+    ioc_prompt = f"""
+    Analyze the following raw incident data. Your only task is to extract all potential Indicators of Compromise (IOCs) such as IP addresses, domains, file hashes (MD5, SHA1, SHA256), URLs, and email addresses. Present the output as a clean, structured list. If no IOCs are found, state "No IOCs identified."
+    
+    Raw Data:
+    {raw_data_str}
     """
+    extracted_iocs = run_ai_stage(ioc_prompt)
+    if not extracted_iocs: return "Report generation failed at Stage 1."
 
-    try:
-        # Initialize the Gemini Pro model
-        model = genai.GenerativeModel('gemini-1.5-flash')
+    # --- Stage 2: Impact Analysis ---
+    st.info("Stage 2: Analyzing Business Impact...")
+    impact_prompt = f"""
+    Given the following incident data and extracted IOCs, analyze the potential business impact. Your only task is to provide a brief "Impact Assessment" and a "Severity Rating" (choose from: Informational, Low, Medium, High, Critical).
 
-        # Send the prompt to the model
-        response = model.generate_content(master_prompt)
+    Raw Data:
+    {raw_data_str}
 
-        # Return the generated text
-        return response.text
+    Extracted IOCs:
+    {extracted_iocs}
+    """
+    impact_analysis = run_ai_stage(impact_prompt)
+    if not impact_analysis: return "Report generation failed at Stage 2."
 
-    except Exception as e:
-        # Handle potential errors during the API call
-        error_message = f"An error occurred while generating the report: {e}"
-        print(error_message)
-        return error_message
+    # --- Stage 3: Narrative Generation ---
+    st.info("Stage 3: Writing the Full Report...")
+    formatted_sections = "\n".join(f"- {section}" for section in required_sections)
+    final_prompt = f"""
+    You are a world-class cybersecurity analyst and technical writer. Your task is to write a complete, formal incident report.
+
+    Use all the information provided below: the initial raw data, the extracted IOCs, and the impact analysis.
+    You MUST structure your report using these sections ONLY:
+    {formatted_sections}
+
+    Synthesize all information into a coherent narrative. Be professional, clear, and precise.
+
+    **Initial Raw Data:**
+    {raw_data_str}
+
+    **Extracted Indicators of Compromise (IOCs):**
+    {extracted_iocs}
+
+    **Impact & Severity Analysis:**
+    {impact_analysis}
+    
+    Begin the final report now.
+    """
+    final_report = run_ai_stage(final_prompt)
+    if not final_report: return "Report generation failed at Stage 3."
+    
+    st.success("All AI stages complete. Report generated.")
+    return final_report

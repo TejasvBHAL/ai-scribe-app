@@ -1,0 +1,18 @@
+/* Catppuccin Latte Theme */
+.stApp {
+    background-color: #EFF1F5;
+    color: #4C4F69;
+}
+.st-emotion-cache-16txtl3 { /* Sidebar */
+    background-color: #E6E9EF;
+}
+h1, h2, h3 { color: #D20F39; } /* Maroon */
+.st-emotion-cache-16txtl3 h1, .st-emotion-cache-16txtl3 h2, .st-emotion-cache-16txtl3 h3 {
+    color: #1E66F5; /* Blue */
+}
+.stButton>button { border: 2px solid #1E66F5; border-radius: 10px; color: #1E66F5; background-color: transparent; }
+.stButton>button:hover { border-color: #4C4F69; color: #4C4F69; }
+.stButton>button[kind="primary"] { background-color: #1E66F5; color: #EFF1F5; font-weight: bold; }
+.st-emotion-cache-1r6slb0 { /* Toggle */
+    background-color: #CCD0DA;
+}

@@ -1,0 +1,29 @@
+# file_generator.py
+
+from docx import Document
+from fpdf import FPDF
+import io
+
+def create_docx(report_text):
+    """Creates a DOCX file in memory from the report text."""
+    document = Document()
+    document.add_heading('Cybersecurity Incident Report', 0)
+    for paragraph in report_text.split('\n'):
+        document.add_paragraph(paragraph)
+    
+    buffer = io.BytesIO()
+    document.save(buffer)
+    buffer.seek(0)
+    return buffer.getvalue()
+
+def create_pdf(report_text):
+    """Creates a PDF file in memory from the report text."""
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=11)
+    # Encode to 'latin-1' to handle special characters gracefully in FPDF
+    cleaned_text = report_text.encode('latin-1', 'replace').decode('latin-1')
+    pdf.multi_cell(0, 10, txt=cleaned_text)
+
+    # FPDF output is bytes by default when no file name is given
+    return bytes(pdf.output())
