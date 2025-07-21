@@ -23,7 +23,7 @@ except Exception as e:
     st.stop()
 
 # --- MODEL UPGRADE: Using the more powerful Pro model for better reasoning ---
-model = genai.GenerativeModel('gemini-1.5-pro-latest')
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 def run_ai_stage(prompt):
     """A helper function to run a single AI stage."""
