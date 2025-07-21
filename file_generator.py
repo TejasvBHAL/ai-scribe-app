@@ -9,7 +9,13 @@ def create_docx(report_text):
     document = Document()
     document.add_heading('Cybersecurity Incident Report', 0)
     for paragraph in report_text.split('\n'):
-        document.add_paragraph(paragraph)
+        # Add paragraphs, attempting to handle simple markdown like headings
+        if paragraph.startswith('## '):
+            document.add_heading(paragraph.lstrip('## '), level=2)
+        elif paragraph.startswith('# '):
+            document.add_heading(paragraph.lstrip('# '), level=1)
+        else:
+            document.add_paragraph(paragraph)
     
     buffer = io.BytesIO()
     document.save(buffer)
